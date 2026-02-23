@@ -8,22 +8,38 @@ import monstar from "../assets/brands/moonstar.png";
 import randstad from "../assets/brands/randstad.png";
 import star from "../assets/brands/star.png";
 import start_people from "../assets/brands/start_people.png";
+import { Autoplay, Pagination } from "swiper/modules";
 
-const brandLogos = [amazon, vector, casio, monstar, randstad, statusbar, start_people]
+const brandLogos = [
+  amazon,
+  vector,
+  casio,
+  monstar,
+  randstad,
+  statusbar,
+  start_people,
+];
 
 const Brands = () => {
   return (
     <Swiper
+      loop={true}
       slidesPerView={4}
       centeredSlides={true}
       spaceBetween={30}
       grabCursor={true}
+      modules={[Autoplay]}
+      autoplay={{
+        delay: 500,
+        disableOnInteraction: false,
+      }}
     >
-        {
-            brandLogos.map(logo =>  <SwiperSlide> <img src={logo} alt="" /></SwiperSlide> )
-        }
-     
-    
+      {brandLogos.map((logo, index) => (
+        <SwiperSlide key={index}>
+          {" "}
+          <img src={logo} alt="" />
+        </SwiperSlide>
+      ))}
     </Swiper>
   );
 };
