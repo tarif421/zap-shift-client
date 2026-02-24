@@ -23,14 +23,14 @@ const brandLogos = [
 const Brands = () => {
   return (
     <Swiper
-      loop={true}
+    
       slidesPerView={4}
       centeredSlides={true}
-      spaceBetween={30}
+      spaceBetween={20}
       grabCursor={true}
       modules={[Autoplay]}
       autoplay={{
-        delay: 500,
+        delay: 2500,
         disableOnInteraction: false,
       }}
     >
