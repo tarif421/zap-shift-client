@@ -4,8 +4,12 @@ import { auth } from "../firebase/firebase.init";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
 import { register } from "swiper/element";
+import { GoogleAuthProvider } from "firebase/auth/web-extension";
+
+const googlePRovider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
   // register
@@ -17,13 +21,15 @@ const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
+  // google login
+  const signInGoogle = () => {
+    return signInWithPopup(auth, googlePRovider);
+  };
 
-
-
-  
   const authInfo = {
     registerUser,
-    signInUser
+    signInUser,
+    signInGoogle,
   };
   return <AuthContext value={authInfo}>{children}</AuthContext>;
 };
