@@ -2,6 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import SocialLogin from "./SocilaLogin/SocialLogin";
+import axios from "axios";
+import useAuth from "../../../Hook/useAuth";
 
 const Register = () => {
   const {
@@ -9,14 +11,43 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const { registerUser, updateUserProfile } = useAuth();
 
   const handleRegistration = (data) => {
-    console.log("after register", data);
-    const profileImg = data.photo[0];
-    formData.append('image', profileImg)
-    // store the image and get the photo url
-    const formData = new FormData();
-    // update user profile
+    console.log("after register", data.image[0]);
+    const profileImg = data.image[0];
+
+    registerUser(data.email, data.password)
+      .then((result) => {
+        console.log(result.user);
+
+
+        // store the image in form data
+        const formData = new FormData();
+        formData.append("image", profileImg);
+
+        // sent the photo to store and get the url
+        const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`;
+        axios.post(image_API_URL, formData).then((res) => {
+          console.log("after image upload", res.data.data.url);
+
+          // update user profile to firebase
+          const userProfile = {
+            displayName: data.name,
+            photoURL: res.data.data.url,
+          };
+
+          //  send to firebase
+          updateUserProfile(userProfile)
+          .then(() => {
+            console.log('user profile updated')
+          })
+          .catch(error => console.log(error))
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div className="card bg-base-100 w-full max-w-sm mx-auto shrink-0 shadow-2xl">
@@ -47,7 +78,7 @@ const Register = () => {
             className="file-input"
             placeholder="Choose a image"
           />
-          {errors.name?.type === "required" && (
+          {errors.image?.type === "required" && (
             <p role="alert" className="text-red-500">
               Image is required
             </p>
@@ -73,7 +104,7 @@ const Register = () => {
             type="password"
             {...register("password", {
               required: true,
-              minLength: 6,
+              minLength: 8,
               pattern:
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
             })}
@@ -100,7 +131,7 @@ const Register = () => {
         <p>
           Already have an account{" "}
           <Link to="/auth/login" className="text-blue-400 underline">
-            Login
+            Registrater
           </Link>{" "}
         </p>
       </form>

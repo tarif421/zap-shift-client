@@ -8,6 +8,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import { register } from "swiper/element";
 
@@ -36,6 +37,10 @@ const AuthProvider = ({ children }) => {
   const logOut = () => {
     return signOut(auth);
   };
+  //  update profile
+  const updateUserProfile = (profile) => {
+    return updateProfile(auth.currentUser, profile);
+  };
   // observer
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -54,6 +59,7 @@ const AuthProvider = ({ children }) => {
     signInUser,
     signInGoogle,
     logOut,
+    updateUserProfile,
   };
   return <AuthContext value={authInfo}>{children}</AuthContext>;
 };
