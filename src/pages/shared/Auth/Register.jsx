@@ -12,6 +12,11 @@ const Register = () => {
 
   const handleRegistration = (data) => {
     console.log("after register", data);
+    const profileImg = data.photo[0];
+    formData.append('image', profileImg)
+    // store the image and get the photo url
+    const formData = new FormData();
+    // update user profile
   };
   return (
     <div className="card bg-base-100 w-full max-w-sm mx-auto shrink-0 shadow-2xl">
@@ -19,6 +24,36 @@ const Register = () => {
       <p className="text-center">Plese Register</p>
       <form className="card-body" onSubmit={handleSubmit(handleRegistration)}>
         <fieldset className="fieldset">
+          {/* Name */}
+          <label className="label">Name</label>
+          <input
+            type="text"
+            {...register("name", { required: true })}
+            className="input"
+            placeholder="Your Name"
+          />
+          {errors.name?.type === "required" && (
+            <p role="alert" className="text-red-500">
+              Name is required
+            </p>
+          )}
+
+          {/* pHOTO */}
+          <label className="label">Photo</label>
+
+          <input
+            type="file"
+            {...register("image", { required: true })}
+            className="file-input"
+            placeholder="Choose a image"
+          />
+          {errors.name?.type === "required" && (
+            <p role="alert" className="text-red-500">
+              Image is required
+            </p>
+          )}
+
+          {/* email */}
           <label className="label">Email</label>
           <input
             type="email"
@@ -26,11 +61,13 @@ const Register = () => {
             className="input"
             placeholder="Email"
           />
-          {errors.email?.type === "required" && (
+          {errors.name?.type === "required" && (
             <p role="alert" className="text-red-500">
               Email is required
             </p>
           )}
+
+          {/* password */}
           <label className="label">Password</label>
           <input
             type="password"
