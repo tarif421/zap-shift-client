@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import SocialLogin from "./SocilaLogin/SocialLogin";
 import axios from "axios";
 import useAuth from "../../../Hook/useAuth";
@@ -12,6 +12,10 @@ const Register = () => {
     formState: { errors },
   } = useForm();
   const { registerUser, updateUserProfile } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  console.log("in register", location);
 
   const handleRegistration = (data) => {
     console.log("after register", data.image[0]);
@@ -20,7 +24,6 @@ const Register = () => {
     registerUser(data.email, data.password)
       .then((result) => {
         console.log(result.user);
-
 
         // store the image in form data
         const formData = new FormData();
@@ -39,10 +42,11 @@ const Register = () => {
 
           //  send to firebase
           updateUserProfile(userProfile)
-          .then(() => {
-            console.log('user profile updated')
-          })
-          .catch(error => console.log(error))
+            .then(() => {
+              console.log("user profile updated");
+              navigate(location.state || "/");
+            })
+            .catch((error) => console.log(error));
         });
       })
       .catch((error) => {
@@ -130,8 +134,12 @@ const Register = () => {
         </fieldset>
         <p>
           Already have an account{" "}
-          <Link to="/auth/login" className="text-blue-400 underline">
-            Registrater
+          <Link
+            state={location.state}
+            to="/auth/login"
+            className="text-blue-400 underline"
+          >
+            Login
           </Link>{" "}
         </p>
       </form>
