@@ -8,4 +8,4 @@ const Rider = () => {
     );
 };
 
-export default Rider; 
+export default Rider;   
