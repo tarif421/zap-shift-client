@@ -2,14 +2,20 @@ import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useLoaderData } from "react-router";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../Hook/useAxiosSecure";
+import useAuth from "../Hook/useAuth";
 
 const SendParcel = () => {
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    // formState: { errors },
   } = useForm();
+
+  const { user } = useAuth();
+
+  const axiosSecure = useAxiosSecure();
 
   const serviceCenters = useLoaderData();
   const regionsDuplicate = serviceCenters.map((c) => c.region);
@@ -56,12 +62,14 @@ const SendParcel = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, agree!",
     }).then((result) => {
-      if (result.isConfirmed){
-
-       
-    };
-  });
-
+      if (result.isConfirmed) {
+        // save the parcel into the databse
+        axiosSecure.post("/parcels", data).then((res) => {
+          console.log("after saving parcel", res.data);
+        });
+      }
+    });
+  };
   return (
     <div>
       <h2 className="text-5xl font-bold">Send A Parcel</h2>
@@ -125,6 +133,7 @@ const SendParcel = () => {
             <input
               type="text"
               {...register("senderName")}
+              defaultValue={user?.displayName}
               className="input w-full"
               placeholder="sender name"
             />
@@ -133,6 +142,7 @@ const SendParcel = () => {
             <input
               type="email"
               {...register("senderEmail")}
+              defaultValue={user?.email}
               className="input w-full"
               placeholder="sender email"
             />
