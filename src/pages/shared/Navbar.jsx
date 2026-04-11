@@ -4,15 +4,15 @@ import { Link, Links, NavLink } from "react-router";
 import useAuth from "../../Hook/useAuth";
 
 const Navbar = () => {
-  const { user , logOut} = useAuth();
+  const { user, logOut } = useAuth();
 
   const handleLogout = () => {
     logOut()
-    .then()
-    .catch(error => {
-      console.log(error)
-    })
-  }
+      .then()
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const links = (
     <>
@@ -25,6 +25,14 @@ const Navbar = () => {
       <li>
         <NavLink to="/send-parcel">Send Parcel </NavLink>
       </li>
+
+      {user && (
+        <>
+          <li>
+            <NavLink to="/dashboard/my-parcels">My Parcels </NavLink>
+          </li>
+        </>
+      )}
     </>
   );
   return (
@@ -64,15 +72,17 @@ const Navbar = () => {
       </div>
       <div className="navbar-end">
         {user ? (
-          <a onClick={handleLogout} className="btn">Logout</a>
+          <a onClick={handleLogout} className="btn">
+            Logout
+          </a>
         ) : (
           <Link className="btn" to="/auth/login">
             Login
           </Link>
         )}
         <Link className="btn btn-primary text-black" to="/rider">
-            Be a Rider
-          </Link>
+          Be a Rider
+        </Link>
       </div>
     </div>
   );
