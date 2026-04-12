@@ -2,6 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import useAuth from "../../../Hook/useAuth";
 import useAxiosSecure from "../../../Hook/useAxiosSecure";
+import { FiEdit } from "react-icons/fi";
+import { FaTrashAlt } from "react-icons/fa";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import Swal from "sweetalert2";
 
 const MyParcels = () => {
   const { user } = useAuth();
@@ -14,6 +18,26 @@ const MyParcels = () => {
       return res.data;
     },
   });
+
+  const handleParcelDelete = (id) => {
+    console.log(id);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.delete(`/parcels/${id}`).then((res) => {
+          console.log(res.data);
+        });
+      }
+    
+    });
+  };
 
   return (
     <div>
@@ -29,6 +53,7 @@ const MyParcels = () => {
               <th>Weight</th>
               <th>Cost</th>
               <th>Payment Status</th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -39,6 +64,21 @@ const MyParcels = () => {
                 <td>{parcels.parcelWeight}</td>
                 <td>{parcels.parcelCost}</td>
                 <td>Blue</td>
+                <td>
+                  <button className="btn btn-square hover:bg-primary">
+                    <FaMagnifyingGlass />
+                  </button>
+                  <button className="btn btn-square hover:bg-primary">
+                    <FiEdit />
+                  </button>
+
+                  <button
+                    onClick={() => handleParcelDelete(parcels._id)}
+                    className="btn btn-square hover:bg-primary"
+                  >
+                    <FaTrashAlt />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
