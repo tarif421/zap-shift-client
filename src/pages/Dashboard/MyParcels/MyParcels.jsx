@@ -6,6 +6,7 @@ import { FiEdit } from "react-icons/fi";
 import { FaTrashAlt } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import Swal from "sweetalert2";
+import { Link } from "react-router";
 
 const MyParcels = () => {
   const { user } = useAuth();
@@ -58,10 +59,11 @@ const MyParcels = () => {
             <tr>
               <th></th>
               <th>Name</th>
-              <th>Weight</th>
+
               <th>Cost</th>
-              <th>Payment Status</th>
-              <th>Edit</th>
+              <th>Paymnet</th>
+              <th>Delivery Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -69,9 +71,19 @@ const MyParcels = () => {
               <tr key={parcels.id}>
                 <th>{index + 1}</th>
                 <td>{parcels.parcelName}</td>
-                <td>{parcels.parcelWeight}</td>
+                <td>
+                  {parcels.paymentStatus === "paid" ? (
+                    <span className="text-green-400">Paid</span>
+                  ) : (
+                    <Link to={`/dashboard/payment/${parcels._id}`}>
+                      <button className="btn btn-sm btn-primary text-black">
+                        Pay
+                      </button>
+                    </Link>
+                  )}
+                </td>
                 <td>{parcels.parcelCost}</td>
-                <td>Blue</td>
+                <td>{parcels.deliveryStatus}</td>
                 <td>
                   <button className="btn btn-square hover:bg-primary">
                     <FaMagnifyingGlass />
