@@ -60,8 +60,8 @@ const MyParcels = () => {
               <th></th>
               <th>Name</th>
 
-              <th>Cost</th>
-              <th>Paymnet</th>
+              <th>Payment</th>
+              <th>cost</th>
               <th>Delivery Status</th>
               <th>Actions</th>
             </tr>
@@ -82,7 +82,7 @@ const MyParcels = () => {
                     </Link>
                   )}
                 </td>
-                <td>{parcels.parcelCost}</td>
+                <td>{parcels.cost}</td>
                 <td>{parcels.deliveryStatus}</td>
                 <td>
                   <button className="btn btn-square hover:bg-primary">

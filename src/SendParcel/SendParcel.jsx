@@ -51,6 +51,11 @@ const SendParcel = () => {
         cost = minCharge + extraCharge;
       }
     }
+
+    const parcelData = {
+      ...data,
+      cost: cost,
+    };
     console.log("cost", cost);
 
     Swal.fire({
@@ -64,7 +69,7 @@ const SendParcel = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         // save the parcel into the databse
-        axiosSecure.post("/parcels", data).then((res) => {
+        axiosSecure.post("/parcels", parcelData).then((res) => {
           console.log("after saving parcel", res.data);
         });
       }
