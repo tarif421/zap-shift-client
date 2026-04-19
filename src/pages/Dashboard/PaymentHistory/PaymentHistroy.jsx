@@ -24,23 +24,23 @@ const PaymentHistroy = () => {
               <th></th>
               <th>Name</th>
               <th>Amount</th>
+              <th>Paid Time</th>
               <th>Transaction Id</th>
             </tr>
           </thead>
           <tbody>
-            {
-                payments.map((payment , index) =>    <tr key={payment._id}>
-              <th>{index + 1}</th>
-              <td>{payment.parcelName || "No Name Provided"}</td>
-              <td>${payment.amount} {payment.currency.toUpperCase()}</td>
-              <td>{payment.
-transactionId}</td>
-              <td>Blue</td>
-            </tr> )
-            }
-         
-          
-           
+            {payments.map((payment, index) => (
+              <tr key={payment._id}>
+                <th>{index + 1}</th>
+                <td>{payment.parcelName || "No Name Provided"}</td>
+                <td>
+                  ${payment.amount} {payment.currency.toUpperCase()}
+                </td>
+                <td>{payment.paidAt}</td>
+                <td>{payment.transactionId}</td>
+                <td>Blue</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
