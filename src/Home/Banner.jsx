@@ -17,9 +17,7 @@ const Banner = () => {
             <div className="">
               <p className="text-xs">Enjoy fast, reliable parcel delivery  with real-time <br /> tracking and zero hassle. From personal <br /> packages to business shipments — we deliver on time, every time.</p>
             </div>
-            <div className="">
-              <button className="btn">ttt</button>
-            </div>
+      
           
         </div>
       
