@@ -9,12 +9,7 @@ import Register from "../pages/shared/Auth/Register";
 import Rider from "../Rider/Rider";
 import PrivateRoute from "./PrivateRoute";
 import SendParcel from "../SendParcel/SendParcel";
-import DashboardLayout from "../layout/DashboardLayout";
-import MyParcels from "../pages/Dashboard/MyParcels/MyParcels";
-import Payment from "../pages/Dashboard/Payment/Payment";
-import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
-import PaymentCancel from "../pages/Dashboard/Payment/PaymentCancel";
-import PaymentHistroy from "../pages/Dashboard/PaymentHistory/PaymentHistroy";
+
 
 export const router = createBrowserRouter([
   {
@@ -41,7 +36,7 @@ export const router = createBrowserRouter([
             <SendParcel></SendParcel>
           </PrivateRoute>
         ),
-        loader: () => fetch("servicecenter.json").then((res) => res.json()),
+        // loader: () => fetch("servicecenter.json").then((res) => res.json()),
       },
       {
         path: "coverage",
@@ -64,34 +59,5 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "dashboard",
-    element: (
-      <PrivateRoute>
-        <DashboardLayout></DashboardLayout>
-      </PrivateRoute>
-    ),
-    children: [
-      {
-        path: "my-parcels",
-        Component: MyParcels,
-      },
-      {
-        path: "payment/:parcelId",
-        Component: Payment,
-      },
-      {
-        path: "payment-success",
-        Component: PaymentSuccess,
-      },
-      {
-        path: "payment-history",
-        Component: PaymentHistroy,
-      },
-      {
-        path: "payment-cancelled",
-        Component: PaymentCancel,
-      },
-    ],
-  },
+
 ]);
