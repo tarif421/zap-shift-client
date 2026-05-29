@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useLoaderData } from "react-router";
 
 const SendParcel = () => {
   const {
@@ -7,7 +8,13 @@ const SendParcel = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  // region
+  const serviceCenters = useLoaderData();
+  const regionsDuplicate = serviceCenters.map((c) => c.region);
+  const regions = [...new Set(regionsDuplicate)];
+  console.log(regions);
 
+  //  submit percel
   const handleSendParcel = (data) => {
     console.log(data);
   };
@@ -78,9 +85,9 @@ const SendParcel = () => {
               <legend className="fieldset-legend">Sender Regions</legend>
               <select defaultValue="Pick a region" className="select">
                 <option disabled={true}>Pick a region</option>
-                <option>Chrome</option>
-                <option>FireFox</option>
-                <option>Safari</option>
+                {regions.map((r) => (
+                  <option>{r}</option>
+                ))}
               </select>
               <span className="label">Optional</span>
             </fieldset>
