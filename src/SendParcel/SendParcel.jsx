@@ -15,6 +15,7 @@ const SendParcel = () => {
   const regionsDuplicate = serviceCenters.map((c) => c.region);
   const regions = [...new Set(regionsDuplicate)];
   const selectedRegion = useWatch({ control, name: "senderRegion" });
+  const receiverRegion = useWatch({ control, name: "receiverRegion" });
 
   // districts by region
   const districtsByRegion = (region) => {
@@ -26,7 +27,8 @@ const SendParcel = () => {
 
   // submit parcel
   const handleSendParcel = (data) => {
-    console.log(data);
+    const sameDistrict = data.senderDistrict === data.receiverDistrict;
+    console.log(sameDistrict);
   };
 
   return (
@@ -157,11 +159,11 @@ const SendParcel = () => {
               className="input w-full"
               placeholder="Receiver Name"
             />
-                    {/* sender region */}
+            {/* receiver region */}
             <fieldset className="fieldset w-full">
-              <legend className="fieldset-legend">Sender Regions</legend>
+              <legend className="fieldset-legend">Receiver Regions</legend>
               <select
-                {...register("senderRegion")}
+                {...register("receiverRegion")}
                 defaultValue=""
                 className="select w-full"
               >
@@ -176,18 +178,18 @@ const SendParcel = () => {
               </select>
             </fieldset>
 
-            {/* sender districts */}
+            {/* receiver districts */}
             <fieldset className="fieldset w-full">
-              <legend className="fieldset-legend">Sender Districts</legend>
+              <legend className="fieldset-legend">Receiver Districts</legend>
               <select
-                {...register("senderDistrict")}
+                {...register("receiverDistrict")}
                 defaultValue=""
                 className="select w-full"
               >
                 <option value="" disabled={true}>
                   Pick a district
                 </option>
-                {districtsByRegion(selectedRegion).map((d, i) => (
+                {districtsByRegion(receiverRegion).map((d, i) => (
                   <option key={i} value={d}>
                     {d}
                   </option>
@@ -211,7 +213,6 @@ const SendParcel = () => {
               className="input w-full"
               placeholder="Receiver Phone Number"
             />
-        
           </fieldset>
         </div>
         {/* button */}
