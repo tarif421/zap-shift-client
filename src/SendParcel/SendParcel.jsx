@@ -27,8 +27,31 @@ const SendParcel = () => {
 
   // submit parcel
   const handleSendParcel = (data) => {
-    const sameDistrict = data.senderDistrict === data.receiverDistrict;
-    console.log(sameDistrict);
+    const isDocument = data.parcelType === "document";
+
+    const isSameDistrict = data.senderDistrict === data.receiverDistrict;
+    const parcelWeight = parseFloat(data.parcelWeight) || 0;
+
+    let cost = 0;
+
+    if (isDocument) {
+      cost = isSameDistrict ? 60 : 80;
+    } else {
+      if (parcelWeight < 3) {
+        cost = isSameDistrict ? 110 : 150;
+      } else {
+        const minCharge = isSameDistrict ? 110 : 150;
+        const extraWeight = parcelWeight - 3;
+
+        const perKgExtraCharge = isSameDistrict ? 40 : 60;
+        const extraCharge = extraWeight * perKgExtraCharge;
+
+        cost = minCharge + extraCharge;
+      }
+    }
+
+    console.log("Calculated Cost:", cost);
+    return cost;
   };
 
   return (
