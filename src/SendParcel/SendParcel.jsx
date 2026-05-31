@@ -1,14 +1,19 @@
 import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useLoaderData } from "react-router";
+import Swal from "sweetalert2";
+import useAxiosSecure from "../Hook/useAxiosSecure";
+import useAuth from "../Hook/useAuth";
 
 const SendParcel = () => {
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    // formState: { errors },
   } = useForm();
+  const axiosSecure = useAxiosSecure();
+  const {user} = useAuth();
 
   // region
   const serviceCenters = useLoaderData() || [];
@@ -28,7 +33,7 @@ const SendParcel = () => {
   // submit parcel
   const handleSendParcel = (data) => {
     const isDocument = data.parcelType === "document";
-
+    //  price calculation
     const isSameDistrict = data.senderDistrict === data.receiverDistrict;
     const parcelWeight = parseFloat(data.parcelWeight) || 0;
 
@@ -50,8 +55,28 @@ const SendParcel = () => {
       }
     }
 
-    console.log("Calculated Cost:", cost);
-    return cost;
+    // console.log("Calculated Cost:", cost);
+    // return cost;
+    Swal.fire({
+      title: "Agree with the cost?",
+      text: `You will be charged ${cost} taka!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Agree!",
+    }).then((result) => {
+      if (result.isConfirmed)
+        // save the parcel info to the database
+        axiosSecure.post("/parcel", data).then((res) => {
+          console.log("after saving parcel", res.data);
+        });
+
+      Swal.fire({
+        title: "Parcel placed!",
+        icon: "success",
+      });
+    });
   };
 
   return (
@@ -112,8 +137,18 @@ const SendParcel = () => {
             <input
               type="text"
               {...register("senderName")}
+              defaultValue={user?.displayName}
               className="input w-full"
               placeholder="Sender Name"
+            />
+            {/* sender email */}
+            <label className="label">Sender Email</label>
+            <input
+              type="text"
+              {...register("senderEmail")}
+              defaultValue={user?.email}
+              className="input w-full"
+              placeholder="Sender Email"
             />
             {/* sender region */}
             <fieldset className="fieldset w-full">
@@ -181,6 +216,15 @@ const SendParcel = () => {
               {...register("receiverName")}
               className="input w-full"
               placeholder="Receiver Name"
+            />
+                 {/* sender email */}
+            <label className="label">Receiver Email</label>
+            <input
+              type="text"
+              {...register("receiverEmail")}
+              
+              className="input w-full"
+              placeholder="Receiver Email"
             />
             {/* receiver region */}
             <fieldset className="fieldset w-full">
