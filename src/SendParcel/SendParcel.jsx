@@ -13,7 +13,7 @@ const SendParcel = () => {
     // formState: { errors },
   } = useForm();
   const axiosSecure = useAxiosSecure();
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   // region
   const serviceCenters = useLoaderData() || [];
@@ -54,6 +54,8 @@ const SendParcel = () => {
         cost = minCharge + extraCharge;
       }
     }
+    //  sending cost to database
+    data.cost = cost;
 
     // console.log("Calculated Cost:", cost);
     // return cost;
@@ -217,12 +219,11 @@ const SendParcel = () => {
               className="input w-full"
               placeholder="Receiver Name"
             />
-                 {/* sender email */}
+            {/* sender email */}
             <label className="label">Receiver Email</label>
             <input
               type="text"
               {...register("receiverEmail")}
-              
               className="input w-full"
               placeholder="Receiver Email"
             />
