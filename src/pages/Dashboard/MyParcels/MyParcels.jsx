@@ -5,6 +5,7 @@ import useAxiosSecure from "../../../Hook/useAxiosSecure";
 import { FiEdit } from "react-icons/fi";
 import { FaMagnifyingGlass, FaTrashCan } from "react-icons/fa6";
 import Swal from "sweetalert2";
+import { Link } from "react-router";
 
 const MyParcels = () => {
   const { user } = useAuth();
@@ -50,24 +51,34 @@ const MyParcels = () => {
     <div>
       <h2>All of my parcels: {parcels.length}</h2>
       <div className="overflow-x-auto">
-        <table className="table table-zebra">
+        <table className="table table-zebra ">
           {/* head */}
-          <thead>
+          <thead className="bg-amber-300">
             <tr>
               <th></th>
               <th>Name</th>
               <th>Cost</th>
               <th>Payment Status</th>
+              <th>Delivery Status</th>
+
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="bg-amber-100">
             {parcels.map((parcel, index) => (
               <tr key={parcel._id}>
                 <th>{index + 1}</th>
                 <td>{parcel.parcelName}</td>
                 <td>{parcel.cost}</td>
-                <td>{}</td>
+                <td>
+                  {parcel.paymentStatus === "paid" ? (
+                    <span className="text-green-400">Paid</span>
+                  ) : (
+                    <Link to={`/dashboard/payment/${parcel._id}`} className="btn btn-primary btn-sm  text-black">Pay</Link>
+                  )}
+                </td>
+                <td>{parcel.deliveryStatus}</td>
+
                 <td>
                   <button className="btn btn-squere hover:bg-primary">
                     <FaMagnifyingGlass />
