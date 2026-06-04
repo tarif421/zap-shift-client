@@ -47,6 +47,21 @@ const MyParcels = () => {
         });
     });
   };
+  //  hanle payment
+  const handlePayment = async (parcel) => {
+    const paymentInfo = {
+      cost: parcel.cost,
+      parcelId: parcel._id,
+      senderEmail: parcel.senderEmail,
+      parcelName: parcel.parcelName,
+    };
+    const res = await axiosSecure.post(
+      "/create-cheackout-seassion",
+      paymentInfo,
+    );
+    // console.log(res.data.url);
+    window.location.assign(res.data.url);
+  };
   return (
     <div>
       <h2>All of my parcels: {parcels.length}</h2>
@@ -74,7 +89,12 @@ const MyParcels = () => {
                   {parcel.paymentStatus === "paid" ? (
                     <span className="text-green-400">Paid</span>
                   ) : (
-                    <Link to={`/dashboard/payment/${parcel._id}`} className="btn btn-primary btn-sm  text-black">Pay</Link>
+                    <button
+                      onClick={() => handlePayment(parcel)}
+                      className="btn btn-primary btn-sm  text-black"
+                    >
+                      Pay
+                    </button>
                   )}
                 </td>
                 <td>{parcel.deliveryStatus}</td>
