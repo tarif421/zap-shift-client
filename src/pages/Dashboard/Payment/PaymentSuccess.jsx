@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 import useAxiosSecure from "../../../Hook/useAxiosSecure";
 
@@ -9,7 +9,13 @@ const PaymentSuccess = () => {
   const sessionId = searchParams.get("session_id");
   const axiosSecure = useAxiosSecure();
 
+  const effectRan = useRef(false);
+
   useEffect(() => {
+    if (!sessionId || effectRan.current === true) return;
+
+    effectRan.current = true;
+
     if (sessionId) {
       axiosSecure
         .patch(`/payment-success?session_id=${sessionId}`)
