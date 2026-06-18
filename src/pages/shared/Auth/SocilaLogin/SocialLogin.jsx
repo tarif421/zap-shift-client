@@ -17,11 +17,11 @@ const SocialLogin = () => {
 
         // create user in the database
         const userInfo = {
-          email: result.useremail,
+          email: result.user?.email,
           displayName: result.user.displayName,
           photoURL: result.user.photoURL,
         };
-        axiosSecure.post("/user", userInfo).then((res) => {
+        axiosSecure.post("/users", userInfo).then((res) => {
           console.log("user data has been store", res.data);
           navigate(location.state || "/");
         });
@@ -32,7 +32,7 @@ const SocialLogin = () => {
   };
   return (
     <div className="text-center pb-8">
-      <p className="my-8">OR</p>
+      <p className="my-2">OR</p>
       <button
         onClick={handleGoogleSignIN}
         className="btn bg-white text-black border-[#e5e5e5]"
