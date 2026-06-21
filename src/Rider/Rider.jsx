@@ -1,186 +1,211 @@
-import React from "react";
+import React, { useEffect, useState } from "react"; // useState এবং useEffect নেওয়া হয়েছে
 import { useForm, useWatch } from "react-hook-form";
 import useAuth from "../Hook/useAuth";
 import useAxiosSecure from "../Hook/useAxiosSecure";
-import { useLoaderData } from "react-router";
+// import { useLoaderData } from "react-router"; // ❌ এই লাইনটি কেটে দাও
+import Swal from "sweetalert2";
 
 const Rider = () => {
   const {
     register,
     handleSubmit,
     control,
-    // formState: { errors },
-  } = useForm();
-  const { user } = useAuth;
-  const axiosSecure = useAxiosSecure();
+    resetField,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      region: "",
+      district: "",
+    },
+  });
 
-  const serviceCenters = useLoaderData() || [];
-  const regionsDuplicate = serviceCenters.map((c) => c.region);
-  const regions = [...new Set(regionsDuplicate)];
-  const selectedRegion = useWatch({ control, name: "senderRegion" });
-  // districts by region
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  
+  // 📄useLoaderData বদলে useState ব্যবহার করো
+  const [serviceCenters, setServiceCenters] = useState([]);
+
+  // 📄 পেজ লোড হলেই পাবলিক ফোল্ডার থেকে ডাটা নিয়ে আসবে
+  useEffect(() => {
+    fetch("/servicecenter.json") // একদম শুরুতে '/' দিতে ভুলো না
+      .then((res) => res.json())
+      .then((data) => setServiceCenters(data))
+      .catch((err) => console.error("JSON লোড করতে সমস্যা হয়েছে:", err));
+  }, []);
+
+  // Unique regions
+  const regions = [...new Set(serviceCenters.map((c) => c.region))];
+
+  // watch region
+  const selectedRegion = useWatch({ control, name: "region" });
+
+  // reset district when region changes
+  useEffect(() => {
+    resetField("district");
+  }, [selectedRegion, resetField]);
+
+  // district filter
   const districtsByRegion = (region) => {
     if (!region) return [];
     const regionDistricts = serviceCenters.filter((c) => c.region === region);
-    const districts = regionDistricts.map((d) => d.district);
-    return [...new Set(districts)];
+    return [...new Set(regionDistricts.map((d) => d.district))];
   };
 
-  const handleRiderApplication = (data) => {
-    console.log(data);
+  // submit handler
+  const handleRiderApplication = async (data) => {
+    const riderData = {
+      ...data,
+      name: user?.displayName,
+      email: user?.email,
+    };
+
+    try {
+      const res = await axiosSecure.post("/riders", riderData);
+
+      if (res.data.insertedId) {
+        Swal.fire({
+          icon: "success",
+          title: "Application Submitted!",
+          text: "Your rider application has been sent successfully.",
+          confirmButtonColor: "#16a34a",
+        });
+        reset(); 
+      } else if (res.data.message === "already applied") {
+        Swal.fire({
+          icon: "warning",
+          title: "Already Applied!",
+          text: "You have already submitted a rider application.",
+          confirmButtonColor: "#eab308",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: "Something went wrong. Please try again.",
+        confirmButtonColor: "#dc2626",
+      });
+    }
   };
+
   return (
-    <div>
-      <h2>riderr</h2>
+    <div className="max-w-5xl mx-auto">
+      <h2 className="text-3xl font-bold text-center mt-6">Rider Application</h2>
+
       <form
         onSubmit={handleSubmit(handleRiderApplication)}
-        className="mt-12 p-4"
+        className="mt-10 p-6 bg-base-100 shadow-xl rounded-2xl"
       >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          {/* LEFT SIDE */}
+          <fieldset>
+            <h4 className="text-xl font-semibold mb-4">Personal Details</h4>
 
-   
-        {/* two column */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 my-12">
-          {/* sender info */}
-          <fieldset className="fieldset">
-            <h4 className="text-2xl font-semibold">Sender Details</h4>
-            {/* sender name */}
-            <label className="label">Sender Name</label>
+            {/* Name */}
+            <label>Name</label>
             <input
-              type="text"
-              {...register("senderName")}
+              {...register("name", { required: true })}
               defaultValue={user?.displayName}
-              className="input w-full"
-              placeholder="Sender Name"
+              className="input w-full border p-2 rounded mt-1"
             />
-            {/* sender email */}
-            <label className="label">Sender Email</label>
+            {errors.name && <p className="text-red-500">Name is required</p>}
+
+            {/* Email */}
+            <label className="mt-3 block">Email</label>
             <input
-              type="text"
-              {...register("senderEmail")}
+              {...register("email", { required: true })}
               defaultValue={user?.email}
-              className="input w-full"
-              placeholder="Sender Email"
+              className="input w-full border p-2 rounded mt-1"
+              readOnly
             />
-            {/* sender region */}
-            <fieldset className="fieldset w-full">
-              <legend className="fieldset-legend">Sender Regions</legend>
-              <select
-                {...register("senderRegion")}
-                defaultValue=""
-                className="select w-full"
-              >
-                <option value="" disabled={true}>
-                  Pick a region
-                </option>
-                {regions.map((r, i) => (
-                  <option key={i} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-            </fieldset>
 
-            {/* sender districts */}
-            <fieldset className="fieldset w-full">
-              <legend className="fieldset-legend">Sender Districts</legend>
-              <select
-                {...register("senderDistrict")}
-                defaultValue=""
-                className="select w-full"
-              >
-                <option value="" disabled={true}>
-                  Pick a district
+            {/* Region */}
+            <label className="mt-3 block">Region</label>
+            <select
+              {...register("region", { required: true })}
+              className="select w-full border p-2 rounded mt-1"
+            >
+              <option value="">Select Region</option>
+              {regions.map((r, i) => (
+                <option key={i} value={r}>
+                  {r}
                 </option>
-                {districtsByRegion(selectedRegion).map((d, i) => (
-                  <option key={i} value={d}>
-                    {d}
-                  </option>
-                ))}
-              </select>
-            </fieldset>
+              ))}
+            </select>
 
-            {/* sender address */}
-            <label className="label mt-4">Sender Address</label>
+            {/* District */}
+            <label className="mt-3 block">District</label>
+            <select
+              {...register("district", { required: true })}
+              className="select w-full border p-2 rounded mt-1"
+            >
+              <option value="">Select District</option>
+              {districtsByRegion(selectedRegion).map((d, i) => (
+                <option key={i} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
+
+            {/* Address */}
+            <label className="mt-3 block">Address</label>
             <input
-              type="text"
-              {...register("senderAdress")}
-              className="input w-full"
-              placeholder="Sender Address"
-            />
-            {/* sender phone */}
-            <label className="label mt-4">Sender Phone Number</label>
-            <input
-              type="number"
-              {...register("senderPhoneNumber")}
-              className="input w-full"
-              placeholder="Sender Phone Number"
+              {...register("address", { required: true })}
+              className="input w-full border p-2 rounded mt-1"
+              placeholder="Your Address"
             />
           </fieldset>
 
-          {/* receiver info */}
-          <fieldset className="fieldset">
-            <h4 className="text-2xl font-semibold">Receiver Details</h4>
-            {/* receiver name */}
-            <label className="label">Receiver Name</label>
-            <input
-              type="text"
-              {...register("receiverName")}
-              className="input w-full"
-              placeholder="Receiver Name"
-            />
-            {/* sender email */}
-            <label className="label">Receiver Email</label>
-            <input
-              type="text"
-              {...register("receiverEmail")}
-              className="input w-full"
-              placeholder="Receiver Email"
-            />
-            {/* receiver region */}
-            <fieldset className="fieldset w-full">
-              <legend className="fieldset-legend">Receiver Regions</legend>
-              <select
-                {...register("receiverRegion")}
-                defaultValue=""
-                className="select w-full"
-              >
-                <option value="" disabled={true}>
-                  Pick a region
-                </option>
-                {regions.map((r, i) => (
-                  <option key={i} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-            </fieldset>
+          {/* RIGHT SIDE */}
+          <fieldset>
+            <h4 className="text-xl font-semibold mb-4">Professional Info</h4>
 
-      
+            {/* License */}
+            <label>Driving License</label>
+            <input
+              {...register("license", { required: true })}
+              className="input w-full border p-2 rounded mt-1"
+            />
 
-            {/* receiver address */}
-            <label className="label mt-4">Receiver Address</label>
+            {/* NID */}
+            <label className="mt-3 block">NID</label>
             <input
-              type="text"
-              {...register("receiverAdress")}
-              className="input w-full"
-              placeholder="Receiver Address"
+              {...register("nid", { required: true })}
+              className="input w-full border p-2 rounded mt-1"
             />
-            {/* receiver phone */}
-            <label className="label mt-4">Receiver Phone Number</label>
+
+            {/* Bike */}
+            <label className="mt-3 block">Bike Info</label>
             <input
-              type="number"
-              {...register("receiverPhoneNumber")}
-              className="input w-full"
-              placeholder="Receiver Phone Number"
+              {...register("bike", { required: true })}
+              className="input w-full border p-2 rounded mt-1"
             />
+
+            {/* Phone */}
+            <label className="mt-3 block">Phone Number</label>
+            <input
+              type="tel"
+              {...register("phone", {
+                required: true,
+                pattern: /^(01[3-9]\d{8})$/,
+              })}
+              className="input w-full border p-2 rounded mt-1"
+              placeholder="01XXXXXXXXX"
+            />
+            {errors.phone && (
+              <p className="text-red-500">Invalid phone number</p>
+            )}
           </fieldset>
         </div>
-        {/* button */}
-        <input
-          type="submit"
-          value="Send Parcel"
-          className="btn btn-primary text-black"
-        />
+
+        {/* Submit */}
+        <div className="text-center mt-8">
+          <button className="btn btn-primary px-10 text-white bg-blue-600 p-3 rounded font-bold">
+            Apply as Rider
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -1,6 +1,6 @@
 import React from "react";
 import { CiDeliveryTruck } from "react-icons/ci";
-import { FaHistory } from "react-icons/fa";
+import { FaHistory, FaMotorcycle } from "react-icons/fa";
 import { Link, NavLink, Outlet } from "react-router";
 
 const DashboardLayout = () => {
@@ -80,7 +80,10 @@ const DashboardLayout = () => {
                 to="/dashboard/my-parcels"
               >
                 {" "}
-               <span className="text-xl"> <CiDeliveryTruck /></span>
+                <span className="text-xl">
+                  {" "}
+                  <CiDeliveryTruck />
+                </span>
                 <span className="is-drawer-close:hidden">My Parcels</span>
               </NavLink>
             </li>
@@ -91,8 +94,19 @@ const DashboardLayout = () => {
                 to="/dashboard/payment-history"
               >
                 {" "}
-               <FaHistory />
+                <FaHistory />
                 <span className="is-drawer-close:hidden">Payment History</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="Approved Riders"
+                to="/dashboard/approved-riders"
+              >
+                {" "}
+                <FaMotorcycle />
+                <span className="is-drawer-close:hidden">Approved Riders</span>
               </NavLink>
             </li>
 
