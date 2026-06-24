@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import useAxiosSecure from "../../../Hook/useAxiosSecure";
-import { FaUserCheck } from "react-icons/fa";
+import { FaEye, FaUserCheck } from "react-icons/fa";
 import { IoPersonRemove } from "react-icons/io5";
 import { FaTrashCan } from "react-icons/fa6";
 import axios from "axios";
@@ -65,11 +65,14 @@ const ApprovedRiders = () => {
                   <p
                     className={`${rider.status === "approved" ? "text-green-800" : "text-red-500"}`}
                   >
-                    {rider.status || 'pending'}
+                    {rider.status || "pending"}
                   </p>
                 </td>
 
                 <td>
+                  <button className="btn">
+                    <FaEye></FaEye>
+                  </button>
                   <button onClick={() => handleApproval(rider)} className="btn">
                     <FaUserCheck />
                   </button>
