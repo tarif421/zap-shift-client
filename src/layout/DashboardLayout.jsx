@@ -2,10 +2,20 @@ import React from "react";
 import { CiDeliveryTruck } from "react-icons/ci";
 import { FaHistory, FaMotorcycle, FaUsersCog } from "react-icons/fa";
 import { Link, NavLink, Outlet } from "react-router";
-import UseRole from "../Hook/UseRole";
+
+import useRole from "../Hook/useRole";
 
 const DashboardLayout = () => {
-  const { role } = UseRole();
+  const { role, roleLoading } = useRole();
+
+  if (roleLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-base-100">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
+  }
+
   return (
     <div className="drawer lg:drawer-open max-w-7xl mx-auto">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -17,7 +27,6 @@ const DashboardLayout = () => {
             aria-label="open sidebar"
             className="btn btn-square btn-ghost"
           >
-            {/* Sidebar toggle icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -33,7 +42,7 @@ const DashboardLayout = () => {
               <path d="M14 10l2 2l-2 2"></path>
             </svg>
           </label>
-          <div className="px-4">Zap Shift Dashboard </div>
+          <div className="px-4">Zap Shift Dashboard</div>
         </nav>
         {/* Page content here */}
         <Outlet></Outlet>
@@ -48,42 +57,37 @@ const DashboardLayout = () => {
         <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
           {/* Sidebar content here */}
           <ul className="menu w-full grow">
-            {/* List item */}
             <li>
-              <Link to="/">
-                {" "}
-                <button
-                  className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                  data-tip="Homepage"
+              <Link
+                to="/"
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="Homepage"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                  strokeWidth="2"
+                  fill="none"
+                  stroke="currentColor"
+                  className="my-1.5 inline-block size-4"
                 >
-                  {/* Home icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                    strokeWidth="2"
-                    fill="none"
-                    stroke="currentColor"
-                    className="my-1.5 inline-block size-4"
-                  >
-                    <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-                    <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                  </svg>
-                  <span className="is-drawer-close:hidden">Homepage</span>
-                </button>
+                  <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
+                  <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                </svg>
+                <span className="is-drawer-close:hidden">Homepage</span>
               </Link>
             </li>
-            {/* or dashborad links */}
+
+            {/* General User Links */}
             <li>
               <NavLink
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="MyParcels"
                 to="/dashboard/my-parcels"
               >
-                {" "}
                 <span className="text-xl">
-                  {" "}
                   <CiDeliveryTruck />
                 </span>
                 <span className="is-drawer-close:hidden">My Parcels</span>
@@ -95,45 +99,45 @@ const DashboardLayout = () => {
                 data-tip="Payment History"
                 to="/dashboard/payment-history"
               >
-                {" "}
                 <FaHistory />
                 <span className="is-drawer-close:hidden">Payment History</span>
               </NavLink>
             </li>
-        {
-          role === 'admin' && <>
-              <li>
-              <NavLink
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Approved Riders"
-                to="/dashboard/approved-riders"
-              >
-                {" "}
-                <FaMotorcycle />
-                <span className="is-drawer-close:hidden">Approved Riders</span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="Manage Users"
-                to="/dashboard/manage-users"
-              >
-                {" "}
-                <FaUsersCog className="text-xl" />
-                <span className="is-drawer-close:hidden">Manage Users</span>
-              </NavLink>
-            </li>
-          </>
-        }
 
-            {/* List item */}
+            {/*  Admin Specific Links */}
+            {role === "admin" && (
+              <>
+                <li>
+                  <NavLink
+                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Approved Riders"
+                    to="/dashboard/approved-riders"
+                  >
+                    <FaMotorcycle />
+                    <span className="is-drawer-close:hidden">
+                      Approved Riders
+                    </span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Manage Users"
+                    to="/dashboard/manage-users"
+                  >
+                    <FaUsersCog className="text-xl" />
+                    <span className="is-drawer-close:hidden">Manage Users</span>
+                  </NavLink>
+                </li>
+              </>
+            )}
+
+            {/* Settings Item */}
             <li>
               <button
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Settings"
               >
-                {/* Settings icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"

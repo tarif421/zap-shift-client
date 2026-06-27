@@ -4,7 +4,7 @@ import useAxiosSecure from "../../../Hook/useAxiosSecure";
 import { FaEye, FaUserCheck } from "react-icons/fa";
 import { IoPersonRemove } from "react-icons/io5";
 import { FaTrashCan } from "react-icons/fa6";
-import axios from "axios";
+
 import Swal from "sweetalert2";
 
 const ApprovedRiders = () => {
@@ -18,7 +18,7 @@ const ApprovedRiders = () => {
   });
   const updateRiderStatus = (rider, status) => {
     const updateInfo = { status: status, email: rider.email };
-    axiosSecure.patch(`/riders/${rider._id}`, updateInfo).then((res) => {
+    axiosSecure.patch(`/riders/${rider._id}/role`, updateInfo).then((res) => {
       if (res.data.modifiedCount) {
         refetch();
         Swal.fire({

@@ -1,10 +1,11 @@
 import React from "react";
 import useAuth from "../Hook/useAuth";
-import UseRole from "../Hook/UseRole";
+
+import useRole from "../Hook/useRole";
 
 const AdminRoute = ({ children }) => {
   const { user, loading } = useAuth;
-  const { role, roleLoading } = UseRole();
+  const { role, roleLoading } = useRole();
   if (roleLoading || loading) {
     return (
       <div>

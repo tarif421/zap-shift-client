@@ -10,7 +10,6 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { register } from "swiper/element";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -35,6 +34,7 @@ const AuthProvider = ({ children }) => {
   };
   //  log out
   const logOut = () => {
+    setLoading(true);
     return signOut(auth);
   };
   //  update profile
@@ -62,7 +62,9 @@ const AuthProvider = ({ children }) => {
     logOut,
     updateUserProfile,
   };
-  return <AuthContext value={authInfo}>{children}</AuthContext>;
+  return (
+    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;
