@@ -1,6 +1,6 @@
 import React from "react";
 import { CiDeliveryTruck } from "react-icons/ci";
-import { FaHistory, FaMotorcycle, FaUsersCog } from "react-icons/fa";
+import { FaHistory, FaMotorcycle, FaUserCheck, FaUsersCog } from "react-icons/fa";
 import { Link, NavLink, Outlet } from "react-router";
 
 import useRole from "../Hook/useRole";
@@ -127,6 +127,18 @@ const DashboardLayout = () => {
                   >
                     <FaUsersCog className="text-xl" />
                     <span className="is-drawer-close:hidden">Manage Users</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                    data-tip="Assign-Riders"
+                    to="/dashboard/assign-riders"
+                  >
+                    <FaUserCheck className="text-xl " />
+                    <span className="is-drawer-close:hidden">
+                      Assign Riders
+                    </span>
                   </NavLink>
                 </li>
               </>

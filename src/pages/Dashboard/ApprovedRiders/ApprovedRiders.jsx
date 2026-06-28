@@ -50,6 +50,7 @@ const ApprovedRiders = () => {
               <th>Email</th>
               <th>Districts</th>
               <th>Status</th>
+              <th>Work Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -68,6 +69,7 @@ const ApprovedRiders = () => {
                     {rider.status || "pending"}
                   </p>
                 </td>
+                <td>{rider.workStatus}</td>
 
                 <td>
                   <button className="btn">
