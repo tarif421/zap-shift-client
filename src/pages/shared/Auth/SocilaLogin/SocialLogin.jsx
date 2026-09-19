@@ -21,10 +21,15 @@ const SocialLogin = () => {
           displayName: result.user.displayName,
           photoURL: result.user.photoURL,
         };
-        axiosSecure.post("/users", userInfo).then((res) => {
-          console.log("user data has been store", res.data);
-          navigate(location.state || "/");
-        });
+        axiosSecure
+          .post("/users", userInfo)
+          .then((res) => {
+            console.log("user data has been stored", res.data);
+            navigate(location.state || "/");
+          })
+          .catch((err) => {
+            console.error("Backend error:", err);
+          });
       })
       .catch((error) => {
         console.log(error);

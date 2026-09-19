@@ -1,6 +1,12 @@
 import React from "react";
 import { CiDeliveryTruck } from "react-icons/ci";
-import { FaHistory, FaMotorcycle, FaUserCheck, FaUsersCog } from "react-icons/fa";
+import {
+  FaHistory,
+  FaMotorcycle,
+  FaTasks,
+  FaUserCheck,
+  FaUsersCog,
+} from "react-icons/fa";
 import { Link, NavLink, Outlet } from "react-router";
 
 import useRole from "../Hook/useRole";
@@ -81,7 +87,7 @@ const DashboardLayout = () => {
             </li>
 
             {/* General User Links */}
-            <li>
+            {/* <li>
               <NavLink
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="MyParcels"
@@ -102,9 +108,9 @@ const DashboardLayout = () => {
                 <FaHistory />
                 <span className="is-drawer-close:hidden">Payment History</span>
               </NavLink>
-            </li>
+            </li> */}
 
-            {/*  Admin Specific Links */}
+            {/*  Admin  Links */}
             {role === "admin" && (
               <>
                 <li>
@@ -143,7 +149,23 @@ const DashboardLayout = () => {
                 </li>
               </>
             )}
-
+            {/* Rider LInks */}
+            {role === "rider" && (
+              <li>
+                <NavLink
+                  className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                  data-tip="Assigned Deliveries"
+                  to="/dashboard/assigned-deliveries"
+                >
+                  <span className="text-xl">
+                    <FaTasks />
+                  </span>
+                  <span className="is-drawer-close:hidden">
+                    Assigned Deliveries
+                  </span>
+                </NavLink>
+              </li>
+            )}
             {/* Settings Item */}
             <li>
               <button

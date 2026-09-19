@@ -48,10 +48,10 @@ const ApprovedRiders = () => {
               <th></th>
               <th>Name</th>
               <th>Email</th>
-              <th>Districts</th>
-              <th>Status</th>
+              <th>District</th>
+              <th>Application Status</th>
               <th>Work Status</th>
-              <th>Actions</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>

@@ -2,9 +2,11 @@ import React from "react";
 import Logo from "../../Components/Logo/Logo";
 import { Link, Links, NavLink } from "react-router";
 import useAuth from "../../Hook/useAuth";
+import useRole from "../../Hook/useRole";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
+  const { role, roleLoading } = useRole();
 
   const handleLogout = () => {
     logOut()
@@ -27,11 +29,13 @@ const Navbar = () => {
       </li>
 
       {user && (
-        <>
-          <li>
-            <NavLink to="/dashboard/my-parcels">My Parcels </NavLink>
-          </li>
-        </>
+        <li>
+          {role === "admin" ? (
+            <NavLink to="/dashboard/my-parcels">Dashboard</NavLink>
+          ) : (
+            <NavLink to="/dashboard/my-parcels">My Parcels</NavLink>
+          )}
+        </li>
       )}
     </>
   );

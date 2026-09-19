@@ -14,6 +14,7 @@ const AssignRiders = () => {
       const res = await axiosSecure.get(
         "/parcels?deliveryStatus=pending-pickup",
       );
+      // console.log(res.data, "riders data");
       return res.data;
     },
   });
@@ -25,6 +26,7 @@ const AssignRiders = () => {
       const res = await axiosSecure.get(
         `/riders?status=approved&available&district=${selectedParcel?.senderDistrict}&workStatus=available`,
       );
+      
       return res.data;
     },
   });
