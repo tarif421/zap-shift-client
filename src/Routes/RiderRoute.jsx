@@ -1,12 +1,10 @@
 import React from "react";
-
 import useRole from "../Hook/useRole";
 import { Navigate } from "react-router";
 import useAuth from "../Hook/useAuth";
 
-const AdminRoute = ({ children }) => {
-
-  const {  loading } = useAuth();
+const RiderRoute = ({ children }) => {
+  const { loading } = useAuth();
   const { role, roleLoading } = useRole();
 
   if (roleLoading || loading) {
@@ -17,10 +15,10 @@ const AdminRoute = ({ children }) => {
     );
   }
 
-  if (role !== "admin") {
+  if (role !== "rider") {
     return (
       <>
-       <Navigate replace to="/"/>
+        <Navigate replace to="/" />
       </>
     );
   }
@@ -28,4 +26,4 @@ const AdminRoute = ({ children }) => {
   return children;
 };
 
-export default AdminRoute;
+export default RiderRoute;
