@@ -3,6 +3,7 @@ import React from "react";
 import useAuth from "../../../Hook/useAuth";
 import useAxiosSecure from "../../../Hook/useAxiosSecure";
 import Swal from "sweetalert2";
+import { MdTaskAlt } from "react-icons/md";
 
 const AssignedDeliveries = () => {
   const { user } = useAuth();
@@ -12,15 +13,16 @@ const AssignedDeliveries = () => {
     queryKey: ["parcels", user?.email, "driver_assigned"],
     enabled: !!user?.email,
     queryFn: async () => {
+      
       const res = await axiosSecure.get(
-        `/parcels/rider?riderEmail=${user?.email}&deliveryStatus=driver_assign`,
+        `/parcels/rider?riderEmail=${user?.email}`
       );
       return res.data;
     },
   });
 
   const handleDeliveryStatusUpdate = (parcel, status) => {
-    const statusInfo = { deliveryStatus: status };
+    const statusInfo = { deliveryStatus: status, riderId: parcel.riderId };
     let message = `Parcel status updated to ${status.split("_").join(" ")}`;
 
     axiosSecure
@@ -41,9 +43,9 @@ const AssignedDeliveries = () => {
 
   return (
     <div>
-      <h2 className="text-4xl">Parcels Pending Pickup: {parcels.length}</h2>
+      <h2 className="text-4xl font-bold mb-6">Assigned Deliveries: {parcels.length}</h2>
       <div className="overflow-x-auto">
-        <table className="table table-zebra">
+        <table className="table table-zebra w-full">
           <thead>
             <tr>
               <th>#</th>
@@ -56,7 +58,7 @@ const AssignedDeliveries = () => {
             {parcels.map((parcel, index) => (
               <tr key={parcel._id}>
                 <th>{index + 1}</th>
-                <td>{parcel.parcelName}</td>
+                <td className="font-semibold">{parcel.parcelName}</td>
 
                 {/* Confirm Column */}
                 <td>
@@ -66,11 +68,16 @@ const AssignedDeliveries = () => {
                         onClick={() =>
                           handleDeliveryStatusUpdate(parcel, "rider_arriving")
                         }
-                        className="btn btn-primary text-black"
+                        className="btn btn-primary text-black btn-sm mr-2"
                       >
                         Accept
                       </button>
-                      <button className="btn btn-warning text-black ml-3">
+                      <button
+                        onClick={() =>
+                          handleDeliveryStatusUpdate(parcel, "rejected")
+                        }
+                        className="btn btn-warning text-black btn-sm"
+                      >
                         Reject
                       </button>
                     </>
@@ -80,10 +87,9 @@ const AssignedDeliveries = () => {
                     </span>
                   )}
                 </td>
-                <td>
 
                 {/* Other Options / Actions Column */}
-            
+                <td>
                   {parcel.deliveryStatus === "driver_assign" && (
                     <span className="text-gray-400 italic">Accept first</span>
                   )}
@@ -93,28 +99,32 @@ const AssignedDeliveries = () => {
                       onClick={() =>
                         handleDeliveryStatusUpdate(parcel, "parcel_picked_up")
                       }
-                      className="btn btn-warning text-black"
+                      className="btn btn-warning text-black btn-sm"
                     >
                       Mark as Picked up
                     </button>
                   )}
 
-                  {/* if picked up */}
                   {parcel.deliveryStatus === "parcel_picked_up" && (
                     <button
                       onClick={() =>
                         handleDeliveryStatusUpdate(parcel, "parcel_delivered")
                       }
-                      className="btn btn-info text-white"
+                      className="btn btn-info text-white btn-sm"
                     >
                       Mark as Delivered
                     </button>
                   )}
 
-                  {/* ৪. if delivery completed  */}
                   {parcel.deliveryStatus === "parcel_delivered" && (
-                    <span className="badge badge-success p-3 text-white font-bold">
-                      Parcel Delivered
+                    <span className="badge badge-success p-3 text-white font-bold flex items-center gap-1 w-fit">
+                      <MdTaskAlt className="text-lg" /> Parcel Delivered
+                    </span>
+                  )}
+
+                  {parcel.deliveryStatus === "rejected" && (
+                    <span className="badge badge-error p-3 text-white font-bold">
+                      Rejected
                     </span>
                   )}
                 </td>
