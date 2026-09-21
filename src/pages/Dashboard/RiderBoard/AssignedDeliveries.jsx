@@ -7,18 +7,22 @@ import Swal from "sweetalert2";
 const AssignedDeliveries = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+
   const { data: parcels = [], refetch } = useQuery({
-    queryKey: ["parcels", user.email, "driver_assigned"],
+    queryKey: ["parcels", user?.email, "driver_assigned"],
+    enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(
         `/parcels/rider?riderEmail=${user?.email}&deliveryStatus=driver_assign`,
       );
-      console.log(res.data);
       return res.data;
     },
   });
-  const handleAcceptDelivery = (parcel) => {
-    const statusInfo = { deliveryStatus: "rider_arriving" };
+
+  const handleDeliveryStatusUpdate = (parcel, status) => {
+    const statusInfo = { deliveryStatus: status };
+    let message = `Parcel status updated to ${status.split("_").join(" ")}`;
+
     axiosSecure
       .patch(`/parcels/${parcel._id}/status`, statusInfo)
       .then((res) => {
@@ -27,37 +31,41 @@ const AssignedDeliveries = () => {
           Swal.fire({
             position: "top-end",
             icon: "success",
-            title: "Thank you for Accepting",
+            title: message,
             showConfirmButton: false,
             timer: 1500,
           });
         }
       });
   };
+
   return (
     <div>
       <h2 className="text-4xl">Parcels Pending Pickup: {parcels.length}</h2>
       <div className="overflow-x-auto">
         <table className="table table-zebra">
-          {/* head */}
           <thead>
             <tr>
-              <th></th>
+              <th>#</th>
               <th>Name</th>
               <th>Confirm</th>
-              <th>Phone</th>
+              <th>Action / Status</th>
             </tr>
           </thead>
           <tbody>
             {parcels.map((parcel, index) => (
-              <tr>
+              <tr key={parcel._id}>
                 <th>{index + 1}</th>
                 <td>{parcel.parcelName}</td>
+
+                {/* Confirm Column */}
                 <td>
                   {parcel.deliveryStatus === "driver_assign" ? (
                     <>
                       <button
-                        onClick={() => handleAcceptDelivery(parcel)}
+                        onClick={() =>
+                          handleDeliveryStatusUpdate(parcel, "rider_arriving")
+                        }
                         className="btn btn-primary text-black"
                       >
                         Accept
@@ -67,10 +75,49 @@ const AssignedDeliveries = () => {
                       </button>
                     </>
                   ) : (
-                    <span className="btn btn-primary text-black">Accepted</span>
+                    <span className="badge badge-success p-3 text-white">
+                      Accepted
+                    </span>
                   )}
                 </td>
-                <td>{parcel.customerPhone}</td>
+                <td>
+
+                {/* Other Options / Actions Column */}
+            
+                  {parcel.deliveryStatus === "driver_assign" && (
+                    <span className="text-gray-400 italic">Accept first</span>
+                  )}
+
+                  {parcel.deliveryStatus === "rider_arriving" && (
+                    <button
+                      onClick={() =>
+                        handleDeliveryStatusUpdate(parcel, "parcel_picked_up")
+                      }
+                      className="btn btn-warning text-black"
+                    >
+                      Mark as Picked up
+                    </button>
+                  )}
+
+                  {/* if picked up */}
+                  {parcel.deliveryStatus === "parcel_picked_up" && (
+                    <button
+                      onClick={() =>
+                        handleDeliveryStatusUpdate(parcel, "parcel_delivered")
+                      }
+                      className="btn btn-info text-white"
+                    >
+                      Mark as Delivered
+                    </button>
+                  )}
+
+                  {/* ৪. if delivery completed  */}
+                  {parcel.deliveryStatus === "parcel_delivered" && (
+                    <span className="badge badge-success p-3 text-white font-bold">
+                      Parcel Delivered
+                    </span>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

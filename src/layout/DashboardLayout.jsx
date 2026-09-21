@@ -10,6 +10,7 @@ import {
 import { Link, NavLink, Outlet } from "react-router";
 
 import useRole from "../Hook/useRole";
+import { MdTaskAlt } from "react-icons/md";
 
 const DashboardLayout = () => {
   const { role, roleLoading } = useRole();
@@ -162,6 +163,18 @@ const DashboardLayout = () => {
                   </span>
                   <span className="is-drawer-close:hidden">
                     Assigned Deliveries
+                  </span>
+                </NavLink>
+                <NavLink
+                  className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                  data-tip="Completed Deliveries"
+                  to="/dashboard/Completed-deliveries"
+                >
+                  <span className="text-xl">
+                    <MdTaskAlt />
+                  </span>
+                  <span className="is-drawer-close:hidden">
+                    Completed Deliveries
                   </span>
                 </NavLink>
               </li>
