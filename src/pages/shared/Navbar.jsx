@@ -37,6 +37,9 @@ const Navbar = () => {
           )}
         </li>
       )}
+      <li>
+        <NavLink to="/tracking-parcel"> Track Parcel</NavLink>
+      </li>
     </>
   );
   return (

@@ -18,7 +18,7 @@ const AssignRiders = () => {
       return res.data;
     },
   });
-//  todo: invalidate query after assign a rider
+  //  todo: invalidate query after assign a rider
   const { data: riders = [] } = useQuery({
     queryKey: ["riders", selectedParcel?.senderDistrict, "available"],
     enabled: !!selectedParcel,
@@ -26,7 +26,7 @@ const AssignRiders = () => {
       const res = await axiosSecure.get(
         `/riders?status=approved&available&district=${selectedParcel?.senderDistrict}&workStatus=available`,
       );
-      
+
       return res.data;
     },
   });
@@ -41,6 +41,7 @@ const AssignRiders = () => {
       riderEmail: rider.email,
       riderName: rider.name,
       parcelId: selectedParcel._id,
+      trackingId: selectedParcel.trackingId,
     };
     axiosSecure
       .patch(`/parcels/${selectedParcel._id}`, riderAssignInfo)
@@ -118,7 +119,6 @@ const AssignRiders = () => {
               <tbody>
                 {riders.map((rider, i) => (
                   <tr key={rider._id}>
-                    
                     <th>{i + 1}</th>
                     <td>{rider.name}</td>
                     <td>{rider.email}</td>

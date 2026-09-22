@@ -22,7 +22,7 @@ const AssignedDeliveries = () => {
   });
 
   const handleDeliveryStatusUpdate = (parcel, status) => {
-    const statusInfo = { deliveryStatus: status, riderId: parcel.riderId };
+    const statusInfo = { deliveryStatus: status, riderId: parcel.riderId , trackingId: parcel.trackingId};
     let message = `Parcel status updated to ${status.split("_").join(" ")}`;
 
     axiosSecure
@@ -113,7 +113,7 @@ const AssignedDeliveries = () => {
                       className="btn btn-info text-white btn-sm"
                     >
                       Mark as Delivered
-                    </button>
+                    </button> 
                   )}
 
                   {parcel.deliveryStatus === "parcel_delivered" && (
