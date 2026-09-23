@@ -18,12 +18,12 @@ const ParcelTrack = () => {
   const axiosSecure = useAxiosSecure();
   const [searchParams, setSearchParams] = useSearchParams();
   
-  // URL প্যারামিটারে (যেমন: ?trackingId=ZAP-2026-XXX) আইডি থাকলে সরাসরি তা দিয়ে সার্চ শুরু হবে
+  
   const initialTrackingId = searchParams.get("trackingId") || "";
   const [searchInput, setSearchInput] = useState(initialTrackingId);
   const [activeTrackingId, setActiveTrackingId] = useState(initialTrackingId);
 
-  // TanStack useQuery দিয়ে ট্র্যাকিং ডাটা ফেচ করা
+  // TanStack useQuery 
   const {
     data: trackingLogs = [],
     isLoading,
@@ -47,7 +47,7 @@ const ParcelTrack = () => {
     setSearchParams({ trackingId: trimmedId });
   };
 
-  // স্ট্যাটাস অনুসারে আইকন, ব্যাজ কালার ও ফ্রেন্ডলি টাইটেল দেওয়ার হেলপার ফাংশন
+  // according to status icon and badge color....
   const getStatusConfig = (status) => {
     switch (status) {
       case "pending-pickup":
