@@ -2,11 +2,11 @@ import React from "react";
 import Logo from "../../Components/Logo/Logo";
 import { Link, Links, NavLink } from "react-router";
 import useAuth from "../../Hook/useAuth";
-import useRole from "../../Hook/useRole";
+import userole from "../../Hook/useRole";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
-  const { role, roleLoading } = useRole();
+  const { role, roleLoading } = userole();
 
   const handleLogout = () => {
     logOut()
@@ -19,10 +19,10 @@ const Navbar = () => {
   const links = (
     <>
       <li>
-        <NavLink to="">Home</NavLink>
+        <NavLink to="">Services</NavLink>
       </li>
       <li>
-        <NavLink to="/coverage">Coverage</NavLink>
+        <NavLink to="/coverage">Coverage Areas</NavLink>
       </li>
       <li>
         <NavLink to="/send-parcel">Send Parcel </NavLink>
@@ -40,6 +40,7 @@ const Navbar = () => {
       <li>
         <NavLink to="/tracking-parcel"> Track Parcel</NavLink>
       </li>
+      <li>About Us</li>
     </>
   );
   return (

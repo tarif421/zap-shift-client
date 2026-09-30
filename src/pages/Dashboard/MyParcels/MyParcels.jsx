@@ -73,6 +73,7 @@ const MyParcels = () => {
               <th></th>
               <th>Name</th>
               <th>Cost</th>
+              <th>Tracking ID</th>
               <th>Payment Status</th>
               <th>Delivery Status</th>
 
@@ -85,6 +86,7 @@ const MyParcels = () => {
                 <th>{index + 1}</th>
                 <td>{parcel.parcelName}</td>
                 <td>{parcel.cost}</td>
+                <td>{parcel.trackingId}</td>
                 <td>
                   {parcel.paymentStatus === "paid" ? (
                     <span className="text-green-400">Paid</span>
