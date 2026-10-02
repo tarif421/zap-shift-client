@@ -1,7 +1,6 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import useAuth from "./useAuth";
-import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 const axiosSecure = axios.create({
@@ -11,31 +10,30 @@ const axiosSecure = axios.create({
 const useAxiosSecure = () => {
   const { user, logOut } = useAuth();
   const navigate = useNavigate();
-  useEffect(() => {
-    // intercept request
-    const reqItercepter = axiosSecure.interceptors.request.use((config) => {
-      config.headers.Authorization = `Bearer ${user?.accessToken}`;
-      return config;
-    });
 
-    //  interceptor response
+  useEffect(() => {
+    // Intercept request to add Firebase Token
+    const reqItercepter = axiosSecure.interceptors.request.use(async (config) => {
+      if (user) {
+        // Firebase Auth Token পাওয়ার সঠিক উপায়
+        const token = await user.getIdToken();
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    }, (error) => Promise.reject(error));
+
+    // Intercept response
     const resInterceptor = axiosSecure.interceptors.response.use(
-      (response) => {
-        // console.log("Success Response came!", response.data);
-        return response;
-      },
+      (response) => response,
       (error) => {
-        // console.log("Interceptor detected an error:", error.response);
-        // unauthorized ba forbidded hole logout
-        const statusCode = error.status;
+        const statusCode = error.response?.status;
         if (statusCode === 401 || statusCode === 403) {
           logOut().then(() => {
             navigate("/login");
           });
         }
-
         return Promise.reject(error);
-      },
+      }
     );
 
     return () => {
