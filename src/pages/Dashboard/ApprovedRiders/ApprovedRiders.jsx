@@ -4,48 +4,65 @@ import useAxiosSecure from "../../../Hook/useAxiosSecure";
 import { FaEye, FaUserCheck } from "react-icons/fa";
 import { IoPersonRemove } from "react-icons/io5";
 import { FaTrashCan } from "react-icons/fa6";
-
 import Swal from "sweetalert2";
 
 const ApprovedRiders = () => {
   const axiosSecure = useAxiosSecure();
+
   const { refetch, data: riders = [] } = useQuery({
     queryKey: ["riders", "pending"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/riders");
+      // pending riders are those with status "pending"
+      const res = await axiosSecure.get("/riders?status=pending");
       return res.data;
     },
   });
-  const updateRiderStatus = (rider, status) => {
+
+  const updateRiderStatus = async (rider, status) => {
     const updateInfo = { status: status, email: rider.email };
-    axiosSecure.patch(`/riders/${rider._id}/role`, updateInfo).then((res) => {
-      if (res.data.modifiedCount) {
+    try {
+      const res = await axiosSecure.patch(
+        `/riders/${rider._id}/role`,
+        updateInfo,
+      );
+      if (res.data.modifiedCount > 0 || res.data.acknowledged) {
         refetch();
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: `Rider status is set to been ${status}`,
-
-          confirmButtonColor: "#16a34a",
+          title: `Rider status has been set to ${status}`,
+          showConfirmButton: false,
+          timer: 1500,
         });
       }
-    });
+    } catch (error) {
+      console.error("Error updating rider status:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Action Failed",
+        text: error.response?.data?.message || "Something went wrong!",
+      });
+    }
   };
+
   const handleApproval = (rider) => {
     updateRiderStatus(rider, "approved");
   };
+
   const handleRejection = (rider) => {
     updateRiderStatus(rider, "rejected");
   };
+
   return (
-    <div>
-      <h2 className="text-5xl">Riders Pending Approval {riders.length}</h2>
+    <div className="p-4">
+      <h2 className="text-3xl font-bold mb-6">
+        Riders Pending Approval ({riders.length})
+      </h2>
       <div className="overflow-x-auto">
-        <table className="table table-zebra">
-          {/* head */}
+        <table className="table table-zebra w-full">
           <thead>
             <tr>
-              <th></th>
+              <th>#</th>
               <th>Name</th>
               <th>Email</th>
               <th>District</th>
@@ -61,30 +78,42 @@ const ApprovedRiders = () => {
                 <td>{rider.name}</td>
                 <td>{rider.email}</td>
                 <td>{rider.district}</td>
-
                 <td>
-                  <p
-                    className={`${rider.status === "approved" ? "text-green-800" : "text-red-500"}`}
+                  <span
+                    className={`badge ${
+                      rider.status === "approved"
+                        ? "badge-success"
+                        : rider.status === "rejected"
+                          ? "badge-error"
+                          : "badge-warning"
+                    }`}
                   >
                     {rider.status || "pending"}
-                  </p>
+                  </span>
                 </td>
-                <td>{rider.workStatus}</td>
-
-                <td>
-                  <button className="btn">
-                    <FaEye></FaEye>
+                <td>{rider.workStatus || "N/A"}</td>
+                <td className="flex gap-2">
+                  <button className="btn btn-sm btn-ghost">
+                    <FaEye />
                   </button>
-                  <button onClick={() => handleApproval(rider)} className="btn">
+                  <button
+                    onClick={() => handleApproval(rider)}
+                    className="btn btn-sm btn-success text-white"
+                    title="Approve"
+                  >
                     <FaUserCheck />
                   </button>
                   <button
                     onClick={() => handleRejection(rider)}
-                    className="btn"
+                    className="btn btn-sm btn-warning text-white"
+                    title="Reject"
                   >
                     <IoPersonRemove />
                   </button>
-                  <button className="btn">
+                  <button
+                    className="btn btn-sm btn-error text-white"
+                    title="Delete"
+                  >
                     <FaTrashCan />
                   </button>
                 </td>
