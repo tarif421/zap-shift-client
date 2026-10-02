@@ -13,14 +13,17 @@ const useAxiosSecure = () => {
 
   useEffect(() => {
     // Intercept request to add Firebase Token
-    const reqItercepter = axiosSecure.interceptors.request.use(async (config) => {
-      if (user) {
-        // Firebase Auth Token পাওয়ার সঠিক উপায়
-        const token = await user.getIdToken();
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    }, (error) => Promise.reject(error));
+    const reqItercepter = axiosSecure.interceptors.request.use(
+      async (config) => {
+        if (user) {
+          // Firebase Auth Token পাওয়ার সঠিক উপায়
+          const token = await user.getIdToken();
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error),
+    );
 
     // Intercept response
     const resInterceptor = axiosSecure.interceptors.response.use(
@@ -29,11 +32,11 @@ const useAxiosSecure = () => {
         const statusCode = error.response?.status;
         if (statusCode === 401 || statusCode === 403) {
           logOut().then(() => {
-            navigate("/login");
+            navigate("/auth/login");
           });
         }
         return Promise.reject(error);
-      }
+      },
     );
 
     return () => {
