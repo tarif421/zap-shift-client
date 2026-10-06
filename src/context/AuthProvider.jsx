@@ -16,37 +16,48 @@ const googleProvider = new GoogleAuthProvider();
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  // register
+
   const registerUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
-  // sign in
+
   const signInUser = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  // google login
   const signInGoogle = () => {
     setLoading(true);
     return signInWithPopup(auth, googleProvider);
   };
-  //  log out
+
   const logOut = () => {
     setLoading(true);
+    localStorage.removeItem("access-token");
     return signOut(auth);
   };
-  //  update profile
+
   const updateUserProfile = (profile) => {
     return updateProfile(auth.currentUser, profile);
   };
-  // observer
+
+  // Observer
   useEffect(() => {
-    const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        // ফায়ারবেস আইডি টোকেন নিয়ে localStorage-এ রাখা হচ্ছে
+        try {
+          const token = await currentUser.getIdToken();
+          localStorage.setItem("access-token", token);
+        } catch (err) {
+          console.error("Token fetch error:", err);
+        }
+      } else {
+        localStorage.removeItem("access-token");
+      }
       setLoading(false);
-      // console.log(currentUser)
     });
     return () => {
       unSubscribe();
@@ -62,6 +73,7 @@ const AuthProvider = ({ children }) => {
     logOut,
     updateUserProfile,
   };
+
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );
