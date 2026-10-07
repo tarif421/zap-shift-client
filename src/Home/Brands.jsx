@@ -22,6 +22,13 @@ const brandLogos = [
 
 const Brands = () => {
   return (
+    <>
+    <div className="max-w-5xl mx-auto text-center mt-12 mb-12">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#003b36] mb-3 font-stretch-ultra-condensed">
+        We've helped thousends of sales teams
+        </h2>
+   
+      </div>
     <Swiper
     
       slidesPerView={4}
@@ -41,6 +48,7 @@ const Brands = () => {
         </SwiperSlide>
       ))}
     </Swiper>
+    </>
   );
 };
 
