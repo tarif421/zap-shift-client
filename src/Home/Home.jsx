@@ -6,6 +6,7 @@ import WorkFlow from "./WorkFlow";
 import OurService from "./OurService";
 import Process from "./Process";
 import CustomerSatisfaction from "./CustomerSatisfaction";
+import Faq from "./Faq";
 
 const reviewsPromise = fetch("/reviews.json").then((res) => res.json());
 
@@ -20,6 +21,7 @@ const Home = () => {
       <Process />
       <CustomerSatisfaction />
       <Reviews reviewsPromise={reviewsPromise} />
+      <Faq/>
     </div>
   );
 };
