@@ -5,18 +5,20 @@ import Reviews from "./Reviews";
 import WorkFlow from "./WorkFlow";
 import OurService from "./OurService";
 import Process from "./Process";
+import CustomerSatisfaction from "./CustomerSatisfaction";
 
 const reviewsPromise = fetch("/reviews.json").then((res) => res.json());
 
 const Home = () => {
   return (
-    <div>
+    <div className="bg-[#f3f4f6]">
       <Banner />
-     
+
       <WorkFlow />
       <OurService />
-       <Brands />
+      <Brands />
       <Process />
+      <CustomerSatisfaction />
       <Reviews reviewsPromise={reviewsPromise} />
     </div>
   );
