@@ -23,6 +23,7 @@ import AssignedDeliveries from "../pages/Dashboard/RiderBoard/AssignedDeliveries
 import RiderRoute from "./RiderRoute";
 import CompletedDeliveries from "../pages/Dashboard/RiderBoard/CompletedDeliveries";
 import ParcelTrack from "../pages/ParcelTrack/ParcelTrack";
+import About from "../pages/AboutUS/About";
 
 export const router = createBrowserRouter([
   {
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
         path: "tracking-parcel",
         element: <ParcelTrack />,
       },
+      {
+        path: "about",
+        Component: About,
+      },
     ],
   },
   {
@@ -74,7 +79,6 @@ export const router = createBrowserRouter([
         path: "register",
         element: <Register></Register>,
       },
-   
     ],
   },
   {

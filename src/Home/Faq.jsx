@@ -87,7 +87,7 @@ const Faq = () => {
       </div>
 
       {/* See More FAQ's Button */}
-      <div className="max-w-3xl mx-auto flex justify-center mt-10">
+      <div className="max-w-3xl mx-auto flex justify-center  mt-10">
         <button className="flex items-center gap-3 bg-[#bbf7d0] text-[#003b36] font-semibold px-6 py-3.5 rounded-full shadow hover:bg-[#a3f4c0] transition duration-300">
           <span>See More FAQ's</span>
           <span className="w-8 h-8 rounded-full bg-[#111827] text-white flex items-center justify-center text-sm">
